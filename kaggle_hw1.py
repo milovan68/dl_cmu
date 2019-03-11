@@ -59,7 +59,7 @@ class WSJ():
     """
   
     def __init__(self):
-        self.WSJ = "/home/d.milovanov/win_kaggle/digit"
+        self.WSJ = "/home/digit"
         self.dev_set = None
         self.train_set = None
         self.test_set = None
