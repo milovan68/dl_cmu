@@ -58,7 +58,6 @@ class GRU_Cell:
 		self.z_act = Sigmoid()
 		self.r_act = Sigmoid()
 		self.h_act = Tanh()
-
 		
 	def forward(self, x, h):
 		# input:
@@ -79,36 +78,20 @@ class GRU_Cell:
 		h_t = np.multiply((1 - z_t), h) + np.multiply(z_t, h_hat_t)
 		return h_t
 
-
-
 	def backward(self, delta):
 		self.dWzh = np.dot(self.h.reshape(self.h.shape[0], -1), (delta * self.h_hat_t.T - delta * self.h.T) * self.z_act.backward().T).T
-		print(self.dWzh.shape, self.x.shape, self.h.shape)
 		self.dWrh = np.dot(self.h.reshape(self.h.shape[0], -1), np.dot(delta * self.z_t.T * self.h_act.backward().T, self.Wh) * self.h.T * self.r_act.backward().T).T
-		print(self.dWrh.shape)
 		self.dWh = np.dot(self.a9.reshape(self.a9.shape[0], -1), delta * self.z_t.T * self.h_act.backward().T).T
-		print(self.dWh.shape)
 		self.dWzx = np.dot(self.x.reshape(self.x.shape[0], -1), (delta * self.h_hat_t.T - delta * self.h.T) * self.z_act.backward().T).T
-		print(self.dWzx.shape)
 		self.dWrx = np.dot(self.x.reshape(self.x.shape[0], -1), np.dot(delta * self.z_t.T * self.h_act.backward().T, self.Wh) * self.h.T * self.r_act.backward().T).T
-		print(self.dWrx.shape)
 		self.dWx = np.dot(self.x.reshape(self.x.shape[0], -1), delta * self.z_t.T * self.h_act.backward().T).T
-		print(self.dWx.shape)
+		
 		dx = np.dot((delta * self.h_hat_t.T - delta * self.h.T) * self.z_act.backward().T, self.Wzx) + np.dot(np.dot(delta * self.z_t.T * self.h_act.backward().T, self.Wh) * self.h.T * self.r_act.backward().T, self.Wrx) + np.dot(delta * self.z_t.T * self.h_act.backward().T, self.Wx)
 		dh = np.dot((delta * self.h_hat_t.T - delta * self.h.T) * self.z_act.backward().T, self.Wzh) + np.dot(
 			np.dot(delta * self.z_t.T * self.h_act.backward().T, self.Wh) * self.h.T * self.r_act.backward().T,
 			self.Wrh) + np.dot(delta * self.z_t.T * self.h_act.backward().T, self.Wh) * self.r_t.T + delta * (
 						 1 - self.z_t).T
 		return dx, dh
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
